@@ -1,0 +1,167 @@
+/* 1. Definición de Variables (Paleta de colores) */
+:root {
+  /* Colores por defecto (Tema Claro) */
+  --bg-main: #f4f7f6;
+  --bg-card: #ffffff;
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --border-color: #dfe6e9;
+  --accent-color: #00cec9;
+  --accent-hover: #00b894;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* 2. Sobreescritura para Tema Oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-main: #121212;
+    --bg-card: #1e1e1e;
+    --text-primary: #f5f6fa;
+    --text-secondary: #b2bec3;
+    --border-color: #2d3436;
+    --accent-color: #81ecec;
+    --accent-hover: #00cec9;
+    --shadow: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 3. Aplicación de Estilos */
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease;
+}
+
+.quiz-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.quiz-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.quiz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.quiz-card:hover {
+  transform: translateY(-8px);
+}
+
+.quiz-card h3 {
+  margin: 10px 0;
+  color: var(--text-primary);
+}
+
+.quiz-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Etiquetas (Mantenemos colores fijos para legibilidad) */
+.badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.facil { background: #00f1ad; color: #00392b; }
+.intermedio { background: #ffeaa7; color: #5f4d00; }
+.avanzado { background: #ff7675; color: #4b0000; }
+
+/* Botón adaptable */
+.btn-play {
+  width: 100%;
+  background-color: var(--accent-color);
+  color: #1e1e1e; /* Texto siempre oscuro en el botón para contraste */
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.2s;
+}
+
+.btn-play:hover {
+  background-color: var(--accent-hover);
+}
+
+.quiz-detail-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.detail-card {
+  background: var(--bg-card);
+  padding: 40px;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.preguntas-preview {
+  margin: 30px 0;
+  text-align: left;
+  background: var(--bg-main);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.preguntas-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.preguntas-preview li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.btn-start {
+  width: 100%;
+  padding: 15px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
