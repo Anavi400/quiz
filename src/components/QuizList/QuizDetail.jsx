@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import './QuizList'
 
 // Explicacion de la funcion QuizDetail
@@ -10,7 +10,7 @@ export const QuizDetail = ({ quiz, onVolver }) => {
     // currentQuestion: Indica la pregunta actual
     const [currentQuestion, setCurrentQuestion] = useState(0);
     // inGame: Indica si el juego esta activo
-    const [inGame, setInGame] =  useState(false);
+    const [inGame, setInGame] = useState(false);
     // score: Indica la puntuacion actual
     const [score, setScore] = useState(0);
     // quizEnded: Indica si el juego ha terminado
@@ -30,48 +30,62 @@ export const QuizDetail = ({ quiz, onVolver }) => {
     const preguntas = quiz.preguntas;
     // currentQuizItem: Contiene la pregunta actual
     const currentQuizItem = preguntas[currentQuestion];
-    
+
     // Funcion que se ejecuta cuando se presiona el boton de jugar
     const handleStartGame = () => {
-        // Se cambia el estado de inGame a true
         setInGame(true);
-        // Se cambia el estado de currentQuestion a 0
         setCurrentQuestion(0);
-        // Se cambia el estado de score a 0
         setScore(0);
-        // Se cambia el estado de quizEnded a false
         setQuizEnded(false);
+        setTimeRemaining(10); // Reset timer
+        setTimerActive(true); // Start timer
     };
 
     // Funcion que se ejecuta cuando se presiona el boton de una respuesta
     const handleAnswer = (selectedIndex) => {
-        // Se verifica si la respuesta es correcta
+        // Detener el cronómetro mientras se procesa la respuesta
+        setTimerActive(false);
+
         const isCorrect = selectedIndex === currentQuizItem.respuestaCorrecta;
-        
-        // Si la respuesta es correcta, se suma un punto
+
         if (isCorrect) {
-            // Se suma un punto
             setScore(score + 1);
-            // Se muestra un mensaje
             setShowMessage(true);
-            // Se oculta el mensaje despues de 1 segundo
             setTimeout(() => setShowMessage(false), 1000);
         }
 
-        // Se cambia a la siguiente pregunta
         setTimeout(() => {
-            // Si hay mas preguntas, se cambia a la siguiente
             if (currentQuestion + 1 < preguntas.length) {
                 setCurrentQuestion(currentQuestion + 1);
+                setTimeRemaining(10); // Reiniciar tiempo para la siguiente pregunta
+                setTimerActive(true);  // Reactivar el tiempo
             } else {
-                // Si no hay mas preguntas, se termina el juego
                 setQuizEnded(true);
+                setTimerActive(false);
             }
         }, isCorrect ? 1000 : 0);
     };
 
+    // Lógica del temporizador
+    useEffect(() => {
+        let interval = null;
+
+        if (inGame && !quizEnded && timerActive && timeRemaining > 0) {
+            interval = setInterval(() => {
+                setTimeRemaining((prev) => prev - 1);
+            }, 1000);
+        } else if (timeRemaining === 0 && timerActive) {
+            // Si el tiempo se acaba, se cuenta como error y pasa a la siguiente
+            handleAnswer(-1);
+        }
+
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    }, [inGame, quizEnded, timerActive, timeRemaining]);
+
     //ESTRUCTURA PARA CUANDO EL JUEGO ESTE ACTIVO
-    if(inGame && !quizEnded){
+    if (inGame && !quizEnded) {
         // Se muestra la estructura para cuando el juego esta activo
         return (
             // Se muestra el mensaje de respuesta correcta
@@ -92,11 +106,22 @@ export const QuizDetail = ({ quiz, onVolver }) => {
                         ¡Correcto! ✓
                     </div>
                 )}
-                
+
                 {/* Se muestra la estructura para cuando el juego esta activo */}
                 <div className="detail-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', alignItems: 'center' }}>
                         <span className="badge">Pregunta {currentQuestion + 1} de {preguntas.length}</span>
+                        <div style={{
+                            background: timeRemaining <= 3 ? '#ff4d4d' : 'var(--bg-main)',
+                            padding: '5px 15px',
+                            borderRadius: '20px',
+                            fontWeight: 'bold',
+                            border: '2px solid var(--accent-color)',
+                            minWidth: '100px',
+                            textAlign: 'center'
+                        }}>
+                            ⏱️ {timeRemaining}s
+                        </div>
                         <span className="badge" style={{ background: 'var(--accent-color)', color: '#1e1e1e' }}>Puntos: {score}</span>
                     </div>
                     {/* Se muestra la pregunta actual */}
@@ -106,9 +131,9 @@ export const QuizDetail = ({ quiz, onVolver }) => {
                         {/* Se itera sobre las opciones de respuesta */}
                         {currentQuizItem.opciones.map((opcion, index) => (
                             // Se muestra el boton de respuesta
-                            <button 
+                            <button
                                 // Se define la clave del boton
-                                key={index} 
+                                key={index}
                                 // Se define la clase del boton
                                 className="btn-play"
                                 // Se define la funcion que se ejecuta cuando se presiona el boton, aqui se pasa el indice de la opcion seleccionada 
@@ -125,7 +150,7 @@ export const QuizDetail = ({ quiz, onVolver }) => {
     }
 
     //ESTRUCTURA PARA CUANDO EL JUEGO TERMINA
-    if(quizEnded){
+    if (quizEnded) {
         // Se calcula el porcentaje de respuestas correctas
         // preguntas.length: Numero total de preguntas
         const percentage = (score / preguntas.length) * 100;
@@ -149,9 +174,9 @@ export const QuizDetail = ({ quiz, onVolver }) => {
                     // Se muestra el mensaje de quiz completado
                     <h2 style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>Quiz Completado</h2>
                     // Se muestra la estructura para cuando el juego termina
-                    <div style={{ 
-                        background: 'var(--bg-main)', 
-                        padding: '30px', 
+                    <div style={{
+                        background: 'var(--bg-main)',
+                        padding: '30px',
                         borderRadius: '15px',
                         marginBottom: '30px'
                     }}>
@@ -208,7 +233,7 @@ export const QuizDetail = ({ quiz, onVolver }) => {
                                 ))}
                             </ul>
                         </li>
-                        ))}
+                    ))}
                 </ul>
             </div>
 
