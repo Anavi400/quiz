@@ -167,13 +167,9 @@ export const QuizDetail = ({ quiz, onVolver }) => {
         return (
             // Se muestra el contenedor del quiz
             <div className="quiz-detail-container">
-                // Se muestra la tarjeta del quiz
                 <div className="detail-card" style={{ textAlign: 'center' }}>
-                    // Se muestra el mensaje de felicitacion
                     <h1 style={{ fontSize: '2.5rem', marginBottom: '10px' }}>{getMessage()}</h1>
-                    // Se muestra el mensaje de quiz completado
                     <h2 style={{ color: 'var(--text-secondary)', marginBottom: '30px' }}>Quiz Completado</h2>
-                    // Se muestra la estructura para cuando el juego termina
                     <div style={{
                         background: 'var(--bg-main)',
                         padding: '30px',
